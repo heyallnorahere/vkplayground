@@ -1,0 +1,23 @@
+name: build
+on: [ push ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: install dependencies
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+      - name: configure project
+        shell: bash
+        run: |
+          ./config.sh
+      - name: build project
+        shell: bash
+        run: |
+          make -C build -j 8
