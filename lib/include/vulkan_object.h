@@ -10,8 +10,8 @@ namespace libplayground {
                 void* destroy_user_arg;
             };
             vulkan_object(const lifetime_descriptor& desc);
-            template<typename T> T* get() {
-                return (T*)this->m_object;
+            template<typename T> T get() {
+                return (T)this->m_object;
             }
             ~vulkan_object();
         private:
