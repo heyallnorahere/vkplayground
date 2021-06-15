@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "vkplayground_app.h"
+#include "vkplayground.h"
 int main() {
-    std::shared_ptr<vkplayground::application> app = std::make_shared<vkplayground_app>();
+    std::shared_ptr<libplayground::vk::application> app = std::make_shared<vkplayground>();
     try {
         app->run();
     } catch (const std::exception& e) {

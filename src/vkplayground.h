@@ -1,8 +1,7 @@
 #pragma once
-#include "application.h"
-class vkplayground_app : public vkplayground::application {
+class vkplayground : public libplayground::vk::application {
 public:
-    vkplayground_app();
+    vkplayground();
 protected:
     virtual void load() override;
     virtual void update() override;
