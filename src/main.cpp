@@ -1,13 +1,12 @@
 #include "pch.h"
-#include "window.h"
+#include "vkplayground_app.h"
 int main() {
-    auto window = std::make_shared<vkplayground::window>("Vulkan playground", 800, 600);
-    uint32_t extension_count = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
-    std::cout << extension_count << " extensions supported" << std::endl;
-    while (!window->should_close()) {
-        window->swap_buffers();
-        window->poll_events();
+    std::shared_ptr<vkplayground::application> app = std::make_shared<vkplayground_app>();
+    try {
+        app->run();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
-    return 0;
+    return EXIT_SUCCESS;
 }

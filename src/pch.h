@@ -10,5 +10,6 @@
 #include <iostream>
 #include <unordered_map>
 #include <memory>
+#include <stdexcept>
 #include <cstdint>
 #include <stddef.h>

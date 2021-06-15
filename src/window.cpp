@@ -7,7 +7,7 @@ namespace vkplayground {
     window::window(const std::string& title, int32_t width, int32_t height) {
         if (window_count <= 0) {
             if (!glfwInit()) {
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
         }
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
