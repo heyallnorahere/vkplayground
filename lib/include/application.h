@@ -1,5 +1,6 @@
 #pragma once
 #include "window.h"
+#include "vulkan_object.h"
 namespace libplayground {
     namespace vk {
         class application {
@@ -13,8 +14,11 @@ namespace libplayground {
             virtual void render() = 0;
             virtual void unload() = 0;
         private:
+            void init_vulkan();
             void main_loop();
             std::shared_ptr<window> m_window;
+            std::string m_title;
+            std::shared_ptr<vulkan_object> m_instance;
         };
     }
 }

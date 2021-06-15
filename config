@@ -14,8 +14,11 @@ if [[ -z "$BUILD_TYPE" ]]; then
 fi
 
 # echo back information
+SEPARATOR="################################################################################"
+echo "$SEPARATOR"
 echo "Configuring vkplayground CMake projects"
 echo "Build type: $BUILD_TYPE"
+echo "$SEPARATOR"
 
 # configure
-cmake . -B build/ -G "Unix Makefiles" -DBUILD_SHARED_LIBS=OFF $GLFW_SETTINGS -DCMAKE_BUILD_TYPE="$BUILD_TYPE" "$@"
+cmake . -B build/ -G "Unix Makefiles" -DBUILD_SHARED_LIBS=OFF -DBUILD_PLAYGROUND_APPLICATION=ON $GLFW_SETTINGS -DCMAKE_BUILD_TYPE="$BUILD_TYPE" "$@"
