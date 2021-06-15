@@ -16,7 +16,7 @@ jobs:
       - name: configure project
         shell: bash
         run: |
-          ./config.sh
+          ./config
       - name: build project
         shell: bash
         run: |

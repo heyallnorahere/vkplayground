@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# set variables
+GLFW_SETTINGS="-DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF"
+BUILD_TYPE="$1"
+
+# shift arguments
+shift
+
+# check if no argument was passed for BUILD_TYPE
+if [[ -z "$BUILD_TYPE" ]]; then
+    # if no argument was passed, set the build type to release
+    BUILD_TYPE="Release"
+fi
+
+# echo back information
+echo "Configuring vkplayground CMake projects"
+echo "Build type: $BUILD_TYPE"
+
+# configure
+cmake . -B build/ -G "Unix Makefiles" -DBUILD_SHARED_LIBS=OFF $GLFW_SETTINGS -DCMAKE_BUILD_TYPE="$BUILD_TYPE" "$@"
