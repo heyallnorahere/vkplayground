@@ -12,7 +12,7 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+          sudo apt-get install vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
       - name: configure project
         shell: bash
         run: |
