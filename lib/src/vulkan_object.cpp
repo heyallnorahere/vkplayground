@@ -1,5 +1,5 @@
 #include "libvkplayground_pch.h"
-#include "vulkan_object.h"
+#include "libvkplayground/vulkan_object.h"
 namespace libplayground {
     namespace vk {
         vulkan_object::vulkan_object(const lifetime_descriptor& desc) {

@@ -4,5 +4,6 @@
 #include "libvkplayground_pch.h"
 
 // next, the classes
-#include "window.h"
-#include "application.h"
+#include "libvkplayground/vulkan_object.h"
+#include "libvkplayground/window.h"
+#include "libvkplayground/application.h"

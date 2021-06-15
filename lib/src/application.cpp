@@ -1,5 +1,6 @@
 #include "libvkplayground_pch.h"
-#include "application.h"
+#include "libvkplayground/application.h"
+#include "libvkplayground/debug.h"
 static std::vector<const char*> validation_layers = {
     "VK_LAYER_KHRONOS_validation"  
 };
@@ -85,9 +86,12 @@ namespace libplayground {
             }
             create_info.enabledExtensionCount = (uint32_t)required_extensions.size();
             create_info.ppEnabledExtensionNames = required_extensions.data();
+            VkDebugUtilsMessengerCreateInfoEXT debug_create_info;
             if (arg->validation_layers_enabled) {
                 create_info.enabledLayerCount = (uint32_t)validation_layers.size();
                 create_info.ppEnabledLayerNames = validation_layers.data();
+                debug::populate_VkDebugUtilsMessengerCreateInfoEXT(debug_create_info);
+                create_info.pNext = &debug_create_info;
             } else {
                 create_info.enabledLayerCount = 0;
             }
@@ -103,33 +107,14 @@ namespace libplayground {
         static void destroy_instance(void* object, void*) {
             vkDestroyInstance((VkInstance)object, nullptr);
         }
-        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
-            std::string message = "Vulkan: " + std::string(callback_data->pMessage);
-            switch (message_severity) {
-            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-                spdlog::info(message);
-                break;
-            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-                spdlog::warn(message);
-                break;
-            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-                throw std::runtime_error(message);
-                break;
-            }
-            return VK_FALSE;
-        }
         static void* create_debug_messenger(void* user_arg) {
             auto arg = (debug_messenger_creation_user_arg*)user_arg;
             if (!arg->validation_layers_enabled) {
                 delete arg;
                 return nullptr;
             }
-            VkDebugUtilsMessengerCreateInfoEXT create_info{ };
-            create_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-            create_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-            create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-            create_info.pfnUserCallback = debug_callback;
-            create_info.pUserData = nullptr;
+            VkDebugUtilsMessengerCreateInfoEXT create_info;
+            debug::populate_VkDebugUtilsMessengerCreateInfoEXT(create_info);
             auto vkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(arg->instance->get<VkInstance>(), "vkCreateDebugUtilsMessengerEXT");
             if (!vkCreateDebugUtilsMessengerEXT) {
                 delete arg;
