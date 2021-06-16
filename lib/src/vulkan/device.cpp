@@ -4,7 +4,7 @@
 namespace libplayground {
     namespace vk {
         namespace vulkan {
-            struct create_arg {
+            struct device_create_arg {
                 std::shared_ptr<vulkan_object> instance;
                 bool validation_layers_enabled;
             };
@@ -67,7 +67,7 @@ namespace libplayground {
                 return physical_device;
             }
             static void* create(void* user_arg) {
-                auto arg = (create_arg*)user_arg;
+                auto arg = (device_create_arg*)user_arg;
                 std::function<void()> on_throw = [&]() {
                     delete arg;
                 };
@@ -99,18 +99,21 @@ namespace libplayground {
                     throw std::runtime_error("Failed to create logical device!");
                 }
                 delete arg;
+                spdlog::info("Successfully created logical device!");
                 return device;
             }
-            static void destroy(void* object, void* user_arg) {
+            static void destroy(void* object, void*) {
                 vkDestroyDevice((VkDevice)object, nullptr);
             }
             static vulkan_object::lifetime_descriptor get_desc(std::shared_ptr<vulkan_object> instance, bool validation_layers_enabled) {
                 return {
                     create,
                     destroy,
-                    new create_arg{
-                        instance
-                    }
+                    new device_create_arg{
+                        instance,
+                        validation_layers_enabled
+                    },
+                    nullptr
                 };
             }
             device::device(std::shared_ptr<vulkan_object> instance, bool validation_layers_enabled) : vulkan_object(get_desc(instance, validation_layers_enabled)) { }
