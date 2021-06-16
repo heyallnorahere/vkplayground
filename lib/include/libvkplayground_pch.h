@@ -10,8 +10,10 @@
 #include <vector>
 #include <iostream>
 #include <unordered_map>
+#include <map>
 #include <memory>
 #include <stdexcept>
 #include <functional>
+#include <optional>
 #include <cstdint>
 #include <stddef.h>

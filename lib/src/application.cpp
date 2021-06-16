@@ -1,9 +1,7 @@
 #include "libvkplayground_pch.h"
 #include "libvkplayground/application.h"
 #include "libvkplayground/debug.h"
-static std::vector<const char*> validation_layers = {
-    "VK_LAYER_KHRONOS_validation"  
-};
+#include "libvkplayground/vulkan_objects.h"
 namespace libplayground {
     namespace vk {
         struct instance_creation_user_arg {
@@ -41,7 +39,7 @@ namespace libplayground {
             vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
             std::vector<VkLayerProperties> available_layers(layer_count);
             vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
-            for (const char* layer_name : validation_layers) {
+            for (const char* layer_name : debug::validation_layers) {
                 bool found = false;
                 for (const auto& layer : available_layers) {
                     if (strcmp(layer_name, layer.layerName) == 0) {
@@ -88,8 +86,8 @@ namespace libplayground {
             create_info.ppEnabledExtensionNames = required_extensions.data();
             VkDebugUtilsMessengerCreateInfoEXT debug_create_info;
             if (arg->validation_layers_enabled) {
-                create_info.enabledLayerCount = (uint32_t)validation_layers.size();
-                create_info.ppEnabledLayerNames = validation_layers.data();
+                create_info.enabledLayerCount = (uint32_t)debug::validation_layers.size();
+                create_info.ppEnabledLayerNames = debug::validation_layers.data();
                 debug::populate_VkDebugUtilsMessengerCreateInfoEXT(debug_create_info);
                 create_info.pNext = &debug_create_info;
             } else {
@@ -177,6 +175,7 @@ namespace libplayground {
                     this->m_instance
                 }
             });
+            this->m_device = std::make_shared<vulkan::device>(this->m_instance, this->m_validation_layers_enabled);
         }
         void application::main_loop() {
             while (!this->m_window->should_close()) {

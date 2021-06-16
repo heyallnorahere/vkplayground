@@ -3,12 +3,12 @@
 namespace libplayground {
     namespace vk {
         namespace debug {
+            std::vector<const char*> validation_layers = {
+                "VK_LAYER_KHRONOS_validation"  
+            };
             static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
                 std::string message = "Vulkan: " + std::string(callback_data->pMessage);
                 switch (message_severity) {
-                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-                    spdlog::info(message);
-                    break;
                 case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
                     spdlog::warn(message);
                     break;

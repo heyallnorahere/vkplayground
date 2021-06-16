@@ -7,3 +7,6 @@
 #include "libvkplayground/vulkan_object.h"
 #include "libvkplayground/window.h"
 #include "libvkplayground/application.h"
+
+// ...and the vulkan object wrappers
+#include "libvkplayground/vulkan_objects.h"
