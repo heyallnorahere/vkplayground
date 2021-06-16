@@ -15,5 +15,6 @@
 #include <stdexcept>
 #include <functional>
 #include <optional>
+#include <set>
 #include <cstdint>
 #include <stddef.h>

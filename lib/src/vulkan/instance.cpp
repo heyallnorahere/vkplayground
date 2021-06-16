@@ -55,7 +55,7 @@ namespace libplayground {
                 }
                 return extensions;
             }
-            static void* create(void* user_arg) {
+            static void* create_instance(void* user_arg) {
                 auto arg = (instance_create_arg*)user_arg;
                 if (arg->validation_layers_enabled && !check_validation_layers()) {
                     throw std::runtime_error("Validation layers requested, but not available!");
@@ -95,13 +95,13 @@ namespace libplayground {
                 spdlog::info("Successfully created instance!");
                 return instance;
             }
-            static void destroy(void* object, void*) {
+            static void destroy_instance(void* object, void*) {
                 vkDestroyInstance((VkInstance)object, nullptr);
             }
             static vulkan_object::lifetime_descriptor get_desc(const std::string& title, bool validation_layers_enabled) {
                 return {
-                    create,
-                    destroy,
+                    create_instance,
+                    destroy_instance,
                     new instance_create_arg{
                         title,
                         validation_layers_enabled

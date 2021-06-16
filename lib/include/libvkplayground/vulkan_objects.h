@@ -5,7 +5,7 @@ namespace libplayground {
         namespace vulkan {
             class device : public vulkan_object {
             public:
-                device(std::shared_ptr<vulkan_object> instance, bool validation_layers_enabled);
+                device(std::shared_ptr<vulkan_object> instance, std::shared_ptr<vulkan_object> surface, bool validation_layers_enabled);
             };
             class instance : public vulkan_object {
             public:
@@ -14,6 +14,10 @@ namespace libplayground {
             class debug_messenger : public vulkan_object {
             public:
                 debug_messenger(bool validation_layers_enabled, std::shared_ptr<vulkan_object> instance);
+            };
+            class surface : public vulkan_object {
+            public:
+                surface(GLFWwindow* window, std::shared_ptr<vulkan_object> instance);
             };
         }
     }

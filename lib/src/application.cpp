@@ -26,14 +26,15 @@ namespace libplayground {
         void application::update() { }
         void application::init_vulkan() {
             this->m_instance = std::make_shared<vulkan::instance>(this->m_title, this->m_validation_layers_enabled);
+            this->m_surface = std::make_shared<vulkan::surface>(this->m_window->get_pointer(), this->m_instance);
             this->m_debug_messenger = std::make_shared<vulkan::debug_messenger>(this->m_validation_layers_enabled, this->m_instance);
-            this->m_device = std::make_shared<vulkan::device>(this->m_instance, this->m_validation_layers_enabled);
+            this->m_device = std::make_shared<vulkan::device>(this->m_instance, this->m_surface, this->m_validation_layers_enabled);
         }
         void application::main_loop() {
             while (!this->m_window->should_close()) {
                 this->update();
                 this->render();
-                this->m_window->swap_buffers();
+                // todo: swap buffers
                 window::poll_events();
             }
         }

@@ -11,7 +11,7 @@ namespace libplayground {
             struct debug_messenger_destroy_arg {
                 std::shared_ptr<vulkan_object> instance;
             };
-            static void* create(void* user_arg) {
+            static void* create_messenger(void* user_arg) {
                 auto arg = (debug_messenger_create_arg*)user_arg;
                 if (!arg->validation_layers_enabled) {
                     delete arg;
@@ -33,7 +33,7 @@ namespace libplayground {
                 spdlog::info("Successfully created debug messenger!");
                 return debug_messenger;
             }
-            static void destroy(void* object, void* user_arg) {
+            static void destroy_messenger(void* object, void* user_arg) {
                 auto arg = (debug_messenger_destroy_arg*)user_arg;
                 auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(arg->instance->get<VkInstance>(), "vkDestroyDebugUtilsMessengerEXT");
                 if (vkDestroyDebugUtilsMessengerEXT && object) {
@@ -43,8 +43,8 @@ namespace libplayground {
             }
             static vulkan_object::lifetime_descriptor get_desc(bool validation_layers_enabled, std::shared_ptr<vulkan_object> instance) {
                 return {
-                    create,
-                    destroy,
+                    create_messenger,
+                    destroy_messenger,
                     new debug_messenger_create_arg{
                         validation_layers_enabled,
                         instance

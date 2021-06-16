@@ -7,7 +7,6 @@ namespace libplayground {
             ~window();
             GLFWwindow* get_pointer();
             bool should_close();
-            void swap_buffers();
             static void poll_events();
         private:
             GLFWwindow* m_window;

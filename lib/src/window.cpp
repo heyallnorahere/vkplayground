@@ -31,9 +31,6 @@ namespace libplayground {
         bool window::should_close() {
             return glfwWindowShouldClose(this->m_window);
         }
-        void window::swap_buffers() {
-            glfwSwapBuffers(this->m_window);
-        }
         void window::poll_events() {
             glfwPollEvents();
         }

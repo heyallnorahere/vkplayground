@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# make sure submodules are synced
+git submodule update --init --recursive
+
 # set variables
 GLFW_SETTINGS="-DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF"
 BUILD_TYPE="$1"
