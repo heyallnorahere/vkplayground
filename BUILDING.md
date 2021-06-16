@@ -8,4 +8,4 @@
 
 ## Actually building the damn thing
 
-On Unix systems, run `config.sh`, and it should generate makefiles. On Windows, there is no build script, so just run CMake commands until it works. Sorry.
+On Unix systems, run `config` as a bash script, and it should generate makefiles. On Windows, there is no build script, so just run CMake commands until it works. Sorry.
