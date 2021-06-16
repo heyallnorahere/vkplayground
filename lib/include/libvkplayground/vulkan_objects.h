@@ -6,6 +6,9 @@ namespace libplayground {
             class device : public vulkan_object {
             public:
                 device(std::shared_ptr<vulkan_object> instance, std::shared_ptr<vulkan_object> surface, bool validation_layers_enabled);
+                VkPhysicalDevice get_physical_device();
+            private:
+                VkPhysicalDevice m_physical_device;
             };
             class instance : public vulkan_object {
             public:
@@ -18,6 +21,10 @@ namespace libplayground {
             class surface : public vulkan_object {
             public:
                 surface(GLFWwindow* window, std::shared_ptr<vulkan_object> instance);
+            };
+            class swapchain : public vulkan_object {
+            public:
+                swapchain(std::shared_ptr<vulkan_object> device, std::shared_ptr<vulkan_object> surface, GLFWwindow* window);
             };
         }
     }

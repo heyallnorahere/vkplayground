@@ -16,5 +16,7 @@
 #include <functional>
 #include <optional>
 #include <set>
+#include <algorithm>
+#include <array>
 #include <cstdint>
 #include <stddef.h>

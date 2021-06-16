@@ -1,20 +1,16 @@
 #include "libvkplayground_pch.h"
 #include "libvkplayground/vulkan_objects.h"
 #include "libvkplayground/debug.h"
+#include "common.h"
 namespace libplayground {
     namespace vk {
         namespace vulkan {
             struct device_create_arg {
                 std::shared_ptr<vulkan_object> instance, surface;
                 bool validation_layers_enabled;
+                VkPhysicalDevice* physical_device_pointer;
             };
-            struct queue_family_indices {
-                std::optional<uint32_t> graphics_family, present_family;
-                bool is_complete() {
-                    return this->graphics_family.has_value() && this->present_family.has_value();
-                }
-            };
-            static queue_family_indices find_queue_families(VkPhysicalDevice device, std::shared_ptr<vulkan_object> surface) {
+            queue_family_indices find_queue_families(VkPhysicalDevice device, std::shared_ptr<vulkan_object> surface) {
                 queue_family_indices indices;
                 uint32_t queue_family_count = 0;
                 vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
@@ -49,10 +45,34 @@ namespace libplayground {
                 }
                 return required_extensions.empty();
             }
+            // is defined in common.h
+            swapchain_support_details query_swapchain_support(VkPhysicalDevice device, std::shared_ptr<vulkan_object> surface) {
+                swapchain_support_details details;
+                VkSurfaceKHR vk_surface = surface->get<VkSurfaceKHR>();
+                vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, vk_surface, &details.capabilities);
+                uint32_t format_count = 0;
+                vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_surface, &format_count, nullptr);
+                if (format_count > 0) {
+                    details.formats.resize((size_t)format_count);
+                    vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_surface, &format_count, details.formats.data());
+                }
+                uint32_t present_mode_count = 0;
+                vkGetPhysicalDeviceSurfacePresentModesKHR(device, vk_surface, &present_mode_count, nullptr);
+                if (present_mode_count > 0) {
+                    details.present_modes.resize((size_t)present_mode_count);
+                    vkGetPhysicalDeviceSurfacePresentModesKHR(device, vk_surface, &present_mode_count, details.present_modes.data());
+                }
+                return details;
+            }
             static bool is_device_suitable(VkPhysicalDevice device, std::shared_ptr<vulkan_object> surface) {
                 queue_family_indices indices = find_queue_families(device, surface);
                 bool extensions_supported = check_device_extension_support(device);
-                return indices.is_complete() && extensions_supported;
+                bool swapchain_adequate = false;
+                if (extensions_supported) {
+                    swapchain_support_details swapchain_support = query_swapchain_support(device, surface);
+                    swapchain_adequate = !swapchain_support.formats.empty() && !swapchain_support.present_modes.empty();
+                }
+                return indices.is_complete() && extensions_supported && swapchain_adequate;
             }
             static uint32_t rate_device(VkPhysicalDevice device, std::shared_ptr<vulkan_object> surface) {
                 uint32_t score = 0;
@@ -134,6 +154,7 @@ namespace libplayground {
                     delete arg;
                     throw std::runtime_error("Failed to create logical device!");
                 }
+                *(arg->physical_device_pointer) = physical_device;
                 delete arg;
                 spdlog::info("Successfully created logical device!");
                 return device;
@@ -141,19 +162,23 @@ namespace libplayground {
             static void destroy_device(void* object, void*) {
                 vkDestroyDevice((VkDevice)object, nullptr);
             }
-            static vulkan_object::lifetime_descriptor get_desc(std::shared_ptr<vulkan_object> instance, std::shared_ptr<vulkan_object> surface, bool validation_layers_enabled) {
+            static vulkan_object::lifetime_descriptor get_desc(std::shared_ptr<vulkan_object> instance, std::shared_ptr<vulkan_object> surface, bool validation_layers_enabled, VkPhysicalDevice& physical_device) {
                 return {
                     create_device,
                     destroy_device,
                     new device_create_arg{
                         instance,
                         surface,
-                        validation_layers_enabled
+                        validation_layers_enabled,
+                        &physical_device
                     },
                     nullptr
                 };
             }
-            device::device(std::shared_ptr<vulkan_object> instance, std::shared_ptr<vulkan_object> surface, bool validation_layers_enabled) : vulkan_object(get_desc(instance, surface, validation_layers_enabled)) { }
+            device::device(std::shared_ptr<vulkan_object> instance, std::shared_ptr<vulkan_object> surface, bool validation_layers_enabled) : vulkan_object(get_desc(instance, surface, validation_layers_enabled, this->m_physical_device)) { }
+            VkPhysicalDevice device::get_physical_device() {
+                return this->m_physical_device;
+            }
         }
     }
 }

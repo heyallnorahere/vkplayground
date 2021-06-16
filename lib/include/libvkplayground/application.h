@@ -18,7 +18,7 @@ namespace libplayground {
             void main_loop();
             std::shared_ptr<window> m_window;
             std::string m_title;
-            std::shared_ptr<vulkan_object> m_instance, m_debug_messenger, m_device, m_surface;
+            std::shared_ptr<vulkan_object> m_instance, m_debug_messenger, m_device, m_surface, m_swapchain;
             bool m_validation_layers_enabled;
         };
     }

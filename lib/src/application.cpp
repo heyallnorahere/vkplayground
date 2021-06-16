@@ -29,6 +29,7 @@ namespace libplayground {
             this->m_surface = std::make_shared<vulkan::surface>(this->m_window->get_pointer(), this->m_instance);
             this->m_debug_messenger = std::make_shared<vulkan::debug_messenger>(this->m_validation_layers_enabled, this->m_instance);
             this->m_device = std::make_shared<vulkan::device>(this->m_instance, this->m_surface, this->m_validation_layers_enabled);
+            this->m_swapchain = std::make_shared<vulkan::swapchain>(this->m_device, this->m_surface, this->m_window->get_pointer());
         }
         void application::main_loop() {
             while (!this->m_window->should_close()) {
