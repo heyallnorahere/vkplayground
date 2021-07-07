@@ -16,11 +16,24 @@ if [[ -z "$BUILD_TYPE" ]]; then
     BUILD_TYPE="Release"
 fi
 
+# parse $OSTYPE
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    OS_NAME="Linux"
+    OS_TYPE="linux"
+elif [[ "$OSTYPE" == "darwin" ]]; then
+    OS_NAME="MacOS"
+    OS_TYPE="macosx"
+else
+    OS_NAME="Other"
+    OS_TYPE="other"
+fi
+
 # echo back information
 SEPARATOR="################################################################################"
 echo "$SEPARATOR"
 echo "Configuring vkplayground CMake projects"
 echo "Build type: $BUILD_TYPE"
+echo "Operating system: $OS_NAME"
 echo "$SEPARATOR"
 
 # configure

@@ -8,15 +8,22 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: install dependencies
+      - name: setup node
         shell: bash
         run: |
+          curl -fsSL https://deb.nodesource.com/setup_12.x | sudo -E bash -
           sudo apt-get update
-          sudo apt-get install vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev libxxf86vm-dev
+          sudo apt-get install -y nodejs
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9.6
+          architecture: x64
       - name: configure project
         shell: bash
         run: |
-          ./config
+          sudo apt-get update
+          python -m scripts config
       - name: build project
         shell: bash
         run: |

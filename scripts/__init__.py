@@ -1,0 +1,1 @@
+from scripts.config import run as config
